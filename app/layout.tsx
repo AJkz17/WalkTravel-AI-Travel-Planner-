@@ -21,17 +21,23 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      {/* 1. Apply background color directly to body so there are no empty gaps */}
-      <body className="bg-stone-50 text-slate-800 font-sans antialiased">
+      <body className="bg-stone-50 text-slate-800 font-sans antialiased overflow-x-hidden">
         
         <div className="flex min-h-screen w-full">
           <Navbar />
           
-          {/* 2. pl-20 offsets the Navbar. flex & justify-center perfectly centers your Landing page inside the remaining space */}
-          <main className="flex-1 pl-20 flex justify-center">
-            <div className="w-full max-w-6xl">
+          {/* FIX 1: Added 'ml-20' here to strictly shift the entire page 80px away from the fixed sidebar.
+            FIX 2: Changed padding to 'pl-4 md:pl-12 pr-0' so the right edge can go completely edge-to-edge.
+          */}
+          <main className="flex-1 ml-20 pl-4 md:pl-12 py-8 pr-0 w-full">
+            
+            {/* FIX 3: Removed 'max-w-6xl' and 'pl-20' here. 
+              This lets your landing hero section expand across the entire rest of the website row!
+            */}
+            <div className="w-full">
               {children}
             </div>
+            
           </main>
           
         </div>
