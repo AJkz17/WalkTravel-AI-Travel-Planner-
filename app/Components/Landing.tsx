@@ -1,0 +1,149 @@
+import React from 'react';
+import Image from 'next/image';
+import { Users, Map, MapPin, Database, LogIn, UserPlus, Cpu } from 'lucide-react';
+import MalaysiaImage from '../assets/asset';
+
+const Landing = () => {
+    return (
+        <div className="min-h-screen bg-stone-50 text-slate-800 font-sans antialiased">
+            {/* Main Container */}
+            <main className="max-w-6xl mx-auto px-4 py-12 md:py-20">
+                {/* Header / Announcement Banner */}
+                <div className="text-center mb-4">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+                        🇲🇾 Proudly Designed in Malaysia
+                    </span>
+                </div>
+
+                {/* Section 1: Top Hero Row (Description & Visual Elements) */}
+                <section className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-emerald-100/50">
+                    {/* Description Left */}
+                    <div className="md:col-span-7 space-y-6">
+                        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
+                            AI Travel Planner: <br/>
+                            <span className="bg-gradient-to-r from-emerald-600 via-teal-600 to-green-500 bg-clip-text text-transparent">
+                                Your Next Adventure Awaits
+                            </span>
+                        </h1>
+                        <p className="text-lg text-slate-600 leading-relaxed text-justify">
+                            Welcome to the ultimate AI-powered travel companion. Whether you are mapping out a weekend escape to the pristine beaches of Langkawi or orchestrating an international multi-city tour, our platform turns your chaotic travel ideas into perfectly structured itineraries in seconds.
+                        </p>
+                        <p className="text-slate-600 leading-relaxed text-justify">
+                            Driven by advanced AI, our planner curates hidden local gems, tracks your travel statistics, and seamlessly handles the logistics so you can focus entirely on the journey ahead. Your next perfect trip is just a prompt away.
+                        </p>
+                    </div>
+
+                    {/* Visual Elements Right (Malaysia.png with Green Gradient Background) */}
+                    <div className="md:col-span-5 flex justify-center items-center bg-gradient-to-b from-emerald-50 via-teal-50/50 to-green-50 rounded-2xl p-6 border border-emerald-100/40 overflow-hidden min-h-[300px]">
+                        <div className="relative w-full h-64 md:h-full min-h-[240px] transition-transform hover:scale-102 duration-300">
+                            <Image 
+                                src={MalaysiaImage} 
+                                alt="Malaysia AI Travel Elements" 
+                                fill
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 40vw, 33vw"
+                                className="object-contain"
+                                priority
+                            />
+                        </div>
+                    </div>
+                </section>
+
+                {/* Section 2: Middle Data Area (App Usage and Population Insights) */}
+                <section className="mt-8 bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-emerald-100/50">
+                    <div className="mb-6 flex items-center gap-2">
+                        <span className="p-2 rounded-lg bg-emerald-50 text-emerald-600">
+                            <Map size={20} />
+                        </span>
+                        <h2 className="text-xl font-bold text-slate-900">App Usage & Travel Population Insights</h2>
+                    </div>
+                    
+                    {/* Table Responsive Wrapper */}
+                    <div className="overflow-x-auto rounded-xl border border-slate-200">
+                        <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
+                            <thead className="bg-emerald-50/70 text-xs font-semibold uppercase tracking-wider text-emerald-900">
+                                <tr>
+                                    <th scope="col" className="px-6 py-4">Metric</th>
+                                    <th scope="col" className="px-6 py-4">Current Statistics</th>
+                                    <th scope="col" className="px-6 py-4">Platform Status</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-200 bg-white text-slate-700">
+                                <tr className="hover:bg-emerald-50/20 transition-colors">
+                                    <td className="px-6 py-4 font-medium text-slate-900 flex items-center gap-2">
+                                        <Users size={16} className="text-emerald-600" /> Active Global Travelers
+                                    </td>
+                                    <td className="px-6 py-4">45,000+ Users </td>
+                                    <td className="px-6 py-4">
+                                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> Live & Scaling 
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr className="hover:bg-emerald-50/20 transition-colors">
+                                    <td className="px-6 py-4 font-medium text-slate-900 flex items-center gap-2">
+                                        <Map size={16} className="text-emerald-600" /> Itineraries Generated
+                                    </td>
+                                    <td className="px-6 py-4">120,000+ Planned Trips </td>
+                                    <td className="px-6 py-4">
+                                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                                            <Cpu size={12} className="mr-1" /> AI Core Active 
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr className="hover:bg-emerald-50/20 transition-colors">
+                                    <td className="px-6 py-4 font-medium text-slate-900 flex items-center gap-2">
+                                        <MapPin size={16} className="text-emerald-600" /> Malaysian Destination Guides
+                                    </td>
+                                    <td className="px-6 py-4">1,500+ Local Spots Curated </td>
+                                    <td className="px-6 py-4">
+                                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-teal-100 text-teal-800">
+                                            🇲🇾 Region Optimized 
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr className="hover:bg-emerald-50/20 transition-colors">
+                                    <td className="px-6 py-4 font-medium text-slate-900 flex items-center gap-2">
+                                        <Database size={16} className="text-emerald-600" /> Active Repository Syncs
+                                    </td>
+                                    <td className="px-6 py-4">12MB / 100MB Max Limit </td>
+                                    <td className="px-6 py-4">
+                                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-stone-100 text-stone-800">
+                                            PostgreSQL Connected 
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                {/* Section 3: Bottom Call to Action (Green Gradient Focus) */}
+                <section className="mt-8 bg-gradient-to-br from-emerald-950 via-teal-900 to-slate-950 text-white rounded-3xl p-8 md:p-12 shadow-xl text-center relative overflow-hidden">
+                    {/* Vibrant Green/Teal Accent Blurs */}
+                    <div className="absolute -top-12 -left-12 w-48 h-48 bg-emerald-500/15 rounded-full blur-3xl"></div>
+                    <div className="absolute -bottom-12 -right-12 w-48 h-48 bg-teal-500/15 rounded-full blur-3xl"></div>
+
+                    <div className="relative z-10 max-w-xl mx-auto space-y-6">
+                        <h2 className="text-2xl md:text-3xl font-bold">Ready to Experience the Future of Travel?</h2>
+                        <p className="text-emerald-200/70 text-sm md:text-base leading-relaxed">
+                            Authenticate or create your account below to access your personal dashboard, track your loyalty points, and start exploring unique custom itineraries for 2026.
+                        </p>
+                        
+                        {/* Action Buttons Container */}
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-2">
+                            <button className="w-full sm:w-auto px-8 py-3.5 rounded-xl font-semibold bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 transition-all shadow-lg shadow-emerald-900/40 cursor-pointer inline-flex items-center justify-center gap-2">
+                                <LogIn size={16} /> Log In to Dashboard
+                            </button>
+                            <button className="w-full sm:w-auto px-8 py-3.5 rounded-xl font-semibold bg-slate-800 hover:bg-slate-700 active:bg-slate-900 border border-slate-700 hover:border-emerald-600/50 transition-all cursor-pointer inline-flex items-center justify-center gap-2">
+                                <UserPlus size={16} /> Register New Account
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    );
+};
+
+export default Landing;
