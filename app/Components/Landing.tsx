@@ -21,7 +21,7 @@ const Landing = () => {
                     <div className="md:col-span-7 space-y-6">
                         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
                             AI Travel Planner: <br/>
-                            <span className="bg-gradient-to-r from-emerald-600 via-teal-600 to-green-500 bg-clip-text text-transparent">
+                            <span className="bg-linear-to-r from-emerald-600 via-teal-600 to-green-500 bg-clip-text text-transparent">
                                 Your Next Adventure Awaits
                             </span>
                         </h1>
@@ -34,8 +34,8 @@ const Landing = () => {
                     </div>
 
                     {/* Visual Elements Right (Malaysia.png with Green Gradient Background) */}
-                    <div className="md:col-span-5 flex justify-center items-center bg-gradient-to-b from-emerald-50 via-teal-50/50 to-green-50 rounded-2xl p-6 border border-emerald-100/40 overflow-hidden min-h-[300px]">
-                        <div className="relative w-full h-64 md:h-full min-h-[240px] transition-transform hover:scale-102 duration-300">
+                    <div className="md:col-span-5 flex justify-center items-center bg-linear-to-b from-emerald-50 via-teal-50/50 to-green-50 rounded-2xl p-6 border border-emerald-100/40 overflow-hidden min-h-75">
+                        <div className="relative w-full h-64 md:h-full min-h-60 transition-transform hover:scale-102 duration-300">
                             <Image 
                                 src={MalaysiaImage} 
                                 alt="Malaysia AI Travel Elements" 
@@ -118,7 +118,7 @@ const Landing = () => {
                 </section>
 
                 {/* Section 3: Bottom Call to Action (Green Gradient Focus) */}
-                <section className="mt-8 bg-gradient-to-br from-emerald-950 via-teal-900 to-slate-950 text-white rounded-3xl p-8 md:p-12 shadow-xl text-center relative overflow-hidden">
+                <section className="mt-8 bg-linear-to-br from-emerald-950 via-teal-900 to-slate-950 text-white rounded-3xl p-8 md:p-12 shadow-xl text-center relative overflow-hidden">
                     {/* Vibrant Green/Teal Accent Blurs */}
                     <div className="absolute -top-12 -left-12 w-48 h-48 bg-emerald-500/15 rounded-full blur-3xl"></div>
                     <div className="absolute -bottom-12 -right-12 w-48 h-48 bg-teal-500/15 rounded-full blur-3xl"></div>
