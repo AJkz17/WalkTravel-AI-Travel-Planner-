@@ -12,9 +12,7 @@ const Navbar = () => {
                 </h2>
             </div>
 
-            {/* Main Navigation Links (Scrollbar hidden, tooltips visible) */}
-           {/* Main Navigation Links */}
-            {/* FIX: Removed the overflow and scrollbar classes so the tooltips are no longer trapped inside the box! */}
+            {/* Main Navigation Links */}
             <nav className="flex-1 py-6 space-y-4 flex flex-col items-center">
                 
                 {/* ACTIVE STATE */}
@@ -28,7 +26,7 @@ const Navbar = () => {
                 </a>
                 
                 {/* INACTIVE STATE */}
-                <a href="/trip" className="group relative flex items-center justify-center w-12 h-12 text-slate-500 hover:text-emerald-700 hover:bg-emerald-50 rounded-xl transition-all border-2 border-transparent hover:border-emerald-600">
+                <a href="/Trip" className="group relative flex items-center justify-center w-12 h-12 text-slate-500 hover:text-emerald-700 hover:bg-emerald-50 rounded-xl transition-all border-2 border-transparent hover:border-emerald-600">
                     <FiMap size={22} />
                     
                     <span className="absolute left-16 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-slate-800 text-white text-xs font-light tracking-wider px-3 py-1.5 rounded-md pointer-events-none whitespace-nowrap shadow-md z-50">
@@ -65,6 +63,8 @@ const Navbar = () => {
                     </span>
                 </a>
             </div>
+
+
         </aside>
     );
 };
