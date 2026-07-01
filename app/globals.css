@@ -1,2 +1,19 @@
 @import "tailwindcss";
 @tailwind utilities;
+
+@keyframes floatAnimation {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-12px); /* Smoothly lifts up 12px */
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+/* 2. Create a utility class that Next.js can read */
+.animate-float {
+  animation: floatAnimation 4s ease-in-out infinite;
+}
