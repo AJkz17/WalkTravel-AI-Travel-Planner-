@@ -4,6 +4,7 @@ import React, { useState, ChangeEventHandler, FormEventHandler } from 'react';
 import { FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight } from 'react-icons/fi';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import {twinTowerUrl} from '../assets/asset.js'
 
 export default function LoginPage() {
     // UI Feedback States
@@ -89,7 +90,7 @@ export default function LoginPage() {
                             {/* Mask/Crop wrapper clipping the travel graphic */}
                             <div className="w-full h-full rounded-full overflow-hidden bg-emerald-800/40 relative">
                                 <img 
-                                    src="/Malaysia.png" 
+                                    src={twinTowerUrl}
                                     alt="Featured Destination" 
                                     className="w-full h-full object-cover transform scale-110 hover:scale-125 transition-transform duration-700"
                                     onError={(e) => {
