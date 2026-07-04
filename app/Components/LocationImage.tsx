@@ -71,7 +71,7 @@ export default function LocationImage({ query }: LocationImageProps) {
             {/* Floating Meta Labels */}
             <div className="relative p-4 flex justify-between items-start">
                 <span className="bg-emerald-500 text-slate-950 font-bold uppercase tracking-wider text-[10px] px-2.5 py-1 rounded-md shadow-md flex items-center gap-1">
-                    <FiMapPin size={10} /> Live Feed
+                    <FiMapPin size={10} /> Preview Location
                 </span>
                 <span className="bg-slate-900/80 backdrop-blur-md text-slate-300 text-[10px] font-bold px-2 py-0.5 rounded-md border border-slate-700/40">
                     {currentIndex + 1} / {images.length}
