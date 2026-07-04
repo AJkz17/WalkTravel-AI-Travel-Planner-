@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Users, Map, MapPin, Database, LogIn, UserPlus, Cpu } from 'lucide-react';
 import MalaysiaImage from '../assets/asset.js'; // Your original import
 import { MapPicture } from '../assets/asset.js'; // Importing the MapPicture
@@ -134,12 +135,17 @@ const Landing = () => {
                         
                         {/* Action Buttons Container */}
                         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-2">
-                            <button className="w-full sm:w-auto px-8 py-3.5 rounded-xl font-semibold bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 transition-all shadow-lg shadow-emerald-900/40 cursor-pointer inline-flex items-center justify-center gap-2">
-                                <LogIn size={16} /> Log In to Dashboard
-                            </button>
-                            <button className="w-full sm:w-auto px-8 py-3.5 rounded-xl font-semibold bg-slate-800 hover:bg-slate-700 active:bg-slate-900 border border-slate-700 hover:border-emerald-600/50 transition-all cursor-pointer inline-flex items-center justify-center gap-2">
-                                <UserPlus size={16} /> Register New Account
-                            </button>
+                            <Link href="/Login" className="w-full sm:w-auto">
+                                <button className="w-full sm:w-auto px-8 py-3.5 rounded-xl font-semibold bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 transition-all shadow-lg shadow-emerald-900/40 cursor-pointer inline-flex items-center justify-center gap-2">
+                                    <LogIn size={16} /> Log In to Dashboard
+                                </button>
+                            </Link>
+                            <Link href="/register" className="w-full sm:w-auto">
+                                <button className="w-full px-8 py-3.5 rounded-xl font-semibold bg-slate-800 hover:bg-slate-700 active:bg-slate-900 border border-slate-700 hover:border-emerald-600/50 transition-all cursor-pointer inline-flex items-center justify-center gap-2 text-white">
+                                    <UserPlus size={16} /> 
+                                    Register New Account
+                                </button> 
+                            </Link>
                         </div>
                     </div>
                 </section>
