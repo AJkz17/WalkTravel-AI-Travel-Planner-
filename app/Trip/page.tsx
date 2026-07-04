@@ -3,6 +3,7 @@
 import React, { useState, ChangeEventHandler, FormEventHandler } from 'react';
 import ReactMarkdown from 'react-markdown';
 import LocationImage from '../Components/LocationImage';
+import dynamic from 'next/dynamic';
 
 import { 
     FiMapPin, 
@@ -44,6 +45,15 @@ export default function TripPlanner() {
     const handleBlur = () => {
         setPreviewDestination(formData.destination.trim());
     };
+
+    const MapPreview = dynamic(() => import('../Components/MapPreview'), {
+        ssr: false, // 👈 CRITICAL: Disables Server Side Rendering to guarantee no crash errors!
+        loading: () => (
+            <div className="w-full h-64 sm:h-80 rounded-2xl bg-slate-100 border border-slate-200 animate-pulse flex items-center justify-center text-xs text-slate-400">
+                Initializing Leaflet Engine maps...
+            </div>
+        )
+    });
 
     const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
         e.preventDefault();
@@ -306,6 +316,14 @@ export default function TripPlanner() {
                         )}
                     </div>
                 </div>
+
+                {/* 🗺️ DYNAMIC FULL-WIDTH OPENSTREETMAP CONTAINER */}
+                {/* Embedded cleanly below the split planner items grid */}
+                {previewDestination && (
+                    <div className="w-full transition-all mt-6 animate-fade-in">
+                        <MapPreview query={previewDestination} />
+                    </div>
+                )}
 
                 {/* 🤖 AI Output Display Box */}
                 {aiResult && (
