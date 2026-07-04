@@ -3,10 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { FiMap } from 'react-icons/fi';
-
-// 🐛 Leaflet CSS Fix: By default, Next.js setups break Leaflet default pin icons. 
-// This small configuration fixes the missing marker image asset problem natively.
+import { FiMap, FiAlertTriangle } from 'react-icons/fi';
 import 'leaflet/dist/leaflet.css';
 
 const defaultIcon = L.icon({
@@ -20,7 +17,6 @@ interface MapPreviewProps {
     query: string;
 }
 
-// 🗺️ Helper Component to smoothly pan the map viewpoint when the target location updates
 function ChangeMapView({ center }: { center: [number, number] }) {
     const map = useMap();
     useEffect(() => {
@@ -34,25 +30,36 @@ function ChangeMapView({ center }: { center: [number, number] }) {
 export default function MapPreview({ query }: MapPreviewProps) {
     const [coordinates, setCoordinates] = useState<[number, number] | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
+    const [hasError, setHasError] = useState<boolean>(false); // 👈 1. ADDED TRACKER FOR INDEPENDENT SANDBOX
 
     useEffect(() => {
         const convertLocationToCoords = async () => {
             if (!query) return;
             try {
                 setLoading(true);
-                // 🌐 Use Nominatim (OpenStreetMap's free text geocoder) to get lat/long from city strings
+                setHasError(false); 
+
                 const response = await fetch(
                     `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`
                 );
+                
+                // 🛑 2. CAPTURE RATE LIMITS (Catches 429 errors or server blocks cleanly)
+                if (!response.ok) {
+                    throw new Error(`Rate limit or network block anomaly: ${response.status}`);
+                }
+
                 const data = await response.json();
 
                 if (data && data.length > 0) {
                     const lat = parseFloat(data[0].lat);
                     const lon = parseFloat(data[0].lon);
                     setCoordinates([lat, lon]);
+                } else {
+                    setCoordinates(null);
                 }
             } catch (error) {
-                console.error("❌ OSM Geocoding failure:", error);
+                console.error("❌ OSM Geocoding failure caught safely:", error);
+                setHasError(true); // 👈 3. TOGGLE FALLBACK SEPARATELY WITHOUT KILLING COMPONENT STREAMS
             } finally {
                 setLoading(false);
             }
@@ -73,12 +80,20 @@ export default function MapPreview({ query }: MapPreviewProps) {
                         Location Preview
                     </span>
                 </div>
-                {loading && <span className="text-[10px] text-slate-400 animate-pulse font-medium">Updating pin...</span>}
+                {loading && !hasError && <span className="text-[10px] text-slate-400 animate-pulse font-medium">Updating pin...</span>}
             </div>
 
-            {/* Interactive OpenStreetMap Container Wrapper */}
             <div className="flex-1 w-full h-full bg-slate-100 relative z-10">
-                {coordinates ? (
+
+                {hasError ? (
+                    <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-slate-50 text-slate-500 font-sans">
+                        <FiAlertTriangle size={28} className="mb-2 text-amber-500 animate-bounce" />
+                        <span className="text-xs font-bold text-slate-700">Map Limit Reached</span>
+                        <p className="text-[11px] text-slate-400 mt-1 max-w-65 leading-relaxed">
+                            Public map query bounds exceeded. Feel free to continue utilizing the currency converter form fields and image sliders while it cools down!
+                        </p>
+                    </div>
+                ) : coordinates ? (
                     <MapContainer
                         center={coordinates}
                         zoom={13}
