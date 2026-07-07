@@ -13,7 +13,7 @@ const Landing = () => {
                 {/* Header / Announcement Banner */}
                 <div className="text-center mb-4">
                     <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
-                        Proudly Designed in Malaysia
+                        AI Based Travel Planner Itinerary
                     </span>
                 </div>
 
@@ -96,7 +96,7 @@ const Landing = () => {
                                 </tr>
                                 <tr className="hover:bg-emerald-50/20 transition-colors">
                                     <td className="px-6 py-4 font-medium text-slate-900 flex items-center gap-2">
-                                        <MapPin size={16} className="text-emerald-600" /> Malaysian Destination Guides
+                                        <MapPin size={16} className="text-emerald-600" /> WorldWide Destination Guides
                                     </td>
                                     <td className="px-6 py-4">1,500+ Local Spots Curated </td>
                                     <td className="px-6 py-4">
