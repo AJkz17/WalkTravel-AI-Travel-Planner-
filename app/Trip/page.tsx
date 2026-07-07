@@ -365,13 +365,11 @@ export default function TripPlanner() {
                     </div>
                 </div>
 
-                {/* 🗺️ ✨ PERSISTENT ISOLATED FULL-WIDTH MAP PREVIEW CONTAINER */}
-                {/* 2. Swapped directly to standard div rendering using the shell wrapper inside a standard container row */}
                 <div className="w-full">
                     <IsolatedMapSection />
                 </div>
 
-                {/* 🤖 AI Output Display Box */}
+                {/* AI Output Display Box */}
                 {aiResult && (
                     <div className="bg-slate-900 text-slate-100 rounded-3xl shadow-xl border border-slate-800 p-8 mt-6">
                         <div className="border-b border-slate-800 pb-4 mb-6">
