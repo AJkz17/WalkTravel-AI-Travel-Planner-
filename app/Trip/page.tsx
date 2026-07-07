@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState, ChangeEventHandler, FormEventHandler } from 'react';
+import React, { useState, useEffect, useRef, ChangeEventHandler, FormEventHandler } from 'react';
 import ReactMarkdown from 'react-markdown';
 import LocationImage from '../Components/LocationImage';
-import dynamic from 'next/dynamic';
+import CurrencyConverter from '../Components/Currency';
+import MapPreview from '../Components/MapPreview';
+
 
 import { 
     FiMapPin, 
@@ -14,8 +16,15 @@ import {
     FiCompass, 
     FiHeart,
     FiSend,
-    FiInfo
+    FiChevronDown
 } from 'react-icons/fi';
+
+// 🟩 1. CREATE AN ISOLATED SHELL OUTSIDE THE MAIN COMPONENT BODY
+// This isolates state boundaries naturally without requiring React.memo or child props configurations
+const IsolatedMapSection = () => {
+    const MapPreviewElement = MapPreview;
+    return <MapPreviewElement />;
+};
 
 export default function TripPlanner() {
     // UI Notification States
@@ -35,25 +44,57 @@ export default function TripPlanner() {
         interests: ''
     });
 
-    // Track staging variable to update the Billboard image preview smoothly
+    // 🎛️ Custom Dropdowns Independent Open/Close States
+    const [activeDropdown, setActiveDropdown] = useState<'budget' | 'accommodation' | 'travelStyle' | null>(null);
+    
+    // Core Layout References to intercept external clicks
+    const formRef = useRef<HTMLFormElement>(null);
     const [previewDestination, setPreviewDestination] = useState('');
 
-    const handleChange: ChangeEventHandler<HTMLInputElement | HTMLSelectElement> = (e) => {
+    // Mapping Labels for readable trigger buttons text
+    const budgetLabels: Record<string, string> = {
+        Backpacker: 'Backpacker (Low Tier)',
+        Moderate: 'Moderate (Standard)',
+        Luxury: 'Luxury (High Tier)'
+    };
+
+    const accommodationLabels: Record<string, string> = {
+        Hotel: 'Hotel',
+        Hostel: 'Hostel',
+        Airbnb: 'Airbnb / Rental',
+        Resort: 'Resort'
+    };
+
+    const travelStyleLabels: Record<string, string> = {
+        Relaxing: 'Relaxing (Slow-paced)',
+        Balanced: 'Balanced',
+        'Action-Packed': 'Action-Packed (Fast-paced)',
+        Cultural: 'Cultural Immersion'
+    };
+
+    // Close open dropdowns globally if clicking outside the form area
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (formRef.current && !formRef.current.contains(event.target as Node)) {
+                setActiveDropdown(null);
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleCustomSelect = (field: 'budget' | 'accommodation' | 'travelStyle', value: string) => {
+        setFormData({ ...formData, [field]: value });
+        setActiveDropdown(null); // Auto-collapse list instantly upon item selection
     };
 
     const handleBlur = () => {
         setPreviewDestination(formData.destination.trim());
     };
-
-    const MapPreview = dynamic(() => import('../Components/MapPreview'), {
-        ssr: false, // 👈 CRITICAL: Disables Server Side Rendering to guarantee no crash errors!
-        loading: () => (
-            <div className="w-full h-64 sm:h-80 rounded-2xl bg-slate-100 border border-slate-200 animate-pulse flex items-center justify-center text-xs text-slate-400">
-                Initializing Leaflet Engine maps...
-            </div>
-        )
-    });
 
     const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
         e.preventDefault();
@@ -101,49 +142,22 @@ export default function TripPlanner() {
 
     return (
         <div className="min-h-screen bg-stone-50 py-12 px-4 md:px-8 font-sans text-slate-800">
-            <div className="max-w-7xl mx-auto space-y-6">
+            <div className="max-w-7xl mx-auto space-y-6 overflow-visible">
                 
-                {/* 💰 NEW: BUDGET RANGE DECLARATION BANNER (Placed cleanly on top) */}
-                <div className="w-full bg-white border border-slate-200 rounded-2xl p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0">
-                            <FiInfo size={20} />
-                        </div>
-                        <div>
-                            <h3 className="text-sm font-bold text-slate-900">Budget Range References</h3>
-                            <p className="text-xs text-slate-500">Estimated cost metrics calculated per individual plan basis.</p>
-                        </div>
-                    </div>
-                    
-                    {/* Tier Badges Layout Grid */}
-                    <div className="grid grid-cols-3 gap-3 sm:flex sm:items-center">
-                        <div className="bg-slate-50 border border-slate-100 rounded-xl px-4 py-2 text-center sm:text-left">
-                            <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Low Tier</span>
-                            <span className="text-xs font-bold text-slate-700">RM 1,000 - 2,000</span>
-                        </div>
-                        <div className="bg-emerald-50/40 border border-emerald-100/60 rounded-xl px-4 py-2 text-center sm:text-left">
-                            <span className="block text-[10px] font-bold uppercase tracking-wider text-emerald-600">Standard</span>
-                            <span className="text-xs font-bold text-emerald-700">RM 2,500 - 3,500</span>
-                        </div>
-                        <div className="bg-amber-50/40 border border-amber-100/60 rounded-xl px-4 py-2 text-center sm:text-left">
-                            <span className="block text-[10px] font-bold uppercase tracking-wider text-amber-600">High Tier</span>
-                            <span className="text-xs font-bold text-amber-700">Above RM 4,000</span>
-                        </div>
-                    </div>
-                </div>
+                {/* 💱 INTEGRATED CURRENCY CONVERTER & BUDGET REFERENCE */}
+                <CurrencyConverter />
 
                 {/* 🎛️ SIDE-BY-SIDE SPLIT GRID WINDOW */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch overflow-visible">
                     
                     {/* LEFT COLUMN: Input Parameters Form Container */}
-                    <div className="lg:col-span-2 bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden flex flex-col justify-between">
+                    <div className="lg:col-span-2 bg-white rounded-3xl shadow-sm border border-slate-200 overflow-visible flex flex-col justify-between">
                         {/* Header Section */}
-                        <div className="bg-emerald-50/50 p-6 border-b border-emerald-100">
+                        <div className="bg-emerald-50/50 p-6 border-b border-emerald-100 rounded-t-3xl">
                             <h1 className="text-3xl font-extrabold text-slate-900 mb-1">Design Your AI Itinerary</h1>
                             <p className="text-slate-600 text-sm">Tell us about your dream trip, and our AI will craft the perfect daily schedule for you.</p>
                         </div>
 
-                        {/* Status Banners */}
                         {statusMessage && (
                             <div className={`p-4 mx-6 mt-4 rounded-xl border text-sm font-semibold text-center ${
                                 statusMessage.type === 'success' 
@@ -154,8 +168,8 @@ export default function TripPlanner() {
                             </div>
                         )}
 
-                        <form onSubmit={handleSubmit} className="p-6 space-y-6 flex-1 flex flex-col justify-between">
-                            <div className="space-y-6">
+                        <form ref={formRef} onSubmit={handleSubmit} className="p-6 space-y-6 flex-1 flex flex-col justify-between overflow-visible">
+                            <div className="space-y-6 overflow-visible">
                                 {/* Row 1: Destination & Dates */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
@@ -205,21 +219,37 @@ export default function TripPlanner() {
                                 </div>
 
                                 {/* Row 2: Budget, Travelers, Accommodation */}
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <div className="space-y-2">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 overflow-visible">
+                                    {/* Custom Dropdown 1: Budget */}
+                                    <div className="space-y-2 relative overflow-visible">
                                         <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
                                             <FiDollarSign className="text-emerald-600" /> Budget
                                         </label>
-                                        <select 
-                                            name="budget"
-                                            value={formData.budget}
-                                            onChange={handleChange}
-                                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white cursor-pointer text-sm"
+                                        <button
+                                            type="button"
+                                            onClick={() => setActiveDropdown(activeDropdown === 'budget' ? null : 'budget')}
+                                            className="w-full flex items-center justify-between px-4 py-3 rounded-xl border border-slate-200 bg-white hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-medium text-slate-700 transition-all text-left cursor-pointer"
                                         >
-                                            <option value="Backpacker">Backpacker (Low Tier)</option>
-                                            <option value="Moderate">Moderate (Standard)</option>
-                                            <option value="Luxury">Luxury (High Tier)</option>
-                                        </select>
+                                            <span>{budgetLabels[formData.budget]}</span>
+                                            <FiChevronDown className={`text-slate-400 transition-transform ${activeDropdown === 'budget' ? 'rotate-180 text-emerald-600' : ''}`} size={16} />
+                                        </button>
+                                        {activeDropdown === 'budget' && (
+                                            <ul className="absolute left-0 top-full mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-xl z-50 overflow-hidden py-1">
+                                                {Object.keys(budgetLabels).map((key) => (
+                                                    <li key={key}>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleCustomSelect('budget', key)}
+                                                            className={`w-full text-left px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer ${
+                                                                formData.budget === key ? 'bg-emerald-50 text-emerald-700 font-bold' : 'text-slate-600 hover:bg-emerald-50 hover:text-emerald-700'
+                                                            }`}
+                                                        >
+                                                            {budgetLabels[key]}
+                                                        </button>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
                                     </div>
 
                                     <div className="space-y-2">
@@ -236,66 +266,84 @@ export default function TripPlanner() {
                                         />
                                     </div>
 
-                                    <div className="space-y-2">
+                                    {/* Custom Dropdown 2: Accommodation */}
+                                    <div className="space-y-2 relative overflow-visible">
                                         <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
                                             <FiHome className="text-emerald-600" /> Accommodation
                                         </label>
-                                        <select 
-                                            name="accommodation"
-                                            value={formData.accommodation}
-                                            onChange={handleChange}
-                                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white cursor-pointer text-sm"
+                                        <button
+                                            type="button"
+                                            onClick={() => setActiveDropdown(activeDropdown === 'accommodation' ? null : 'accommodation')}
+                                            className="w-full flex items-center justify-between px-4 py-3 rounded-xl border border-slate-200 bg-white hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-medium text-slate-700 transition-all text-left cursor-pointer"
                                         >
-                                            <option value="Hotel">Hotel</option>
-                                            <option value="Hostel">Hostel</option>
-                                            <option value="Airbnb">Airbnb / Rental</option>
-                                            <option value="Resort">Resort</option>
-                                        </select>
+                                            <span>{accommodationLabels[formData.accommodation]}</span>
+                                            <FiChevronDown className={`text-slate-400 transition-transform ${activeDropdown === 'accommodation' ? 'rotate-180 text-emerald-600' : ''}`} size={16} />
+                                        </button>
+                                        {activeDropdown === 'accommodation' && (
+                                            <ul className="absolute left-0 top-full mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-xl z-50 overflow-hidden py-1">
+                                                {Object.keys(accommodationLabels).map((key) => (
+                                                    <li key={key}>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleCustomSelect('accommodation', key)}
+                                                            className={`w-full text-left px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer ${
+                                                                formData.accommodation === key ? 'bg-emerald-50 text-emerald-700 font-bold' : 'text-slate-600 hover:bg-emerald-50 hover:text-emerald-700'
+                                                            }`}
+                                                        >
+                                                            {accommodationLabels[key]}
+                                                        </button>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
                                     </div>
                                 </div>
 
                                 {/* Row 3: Travel Style & Interests */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-2">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 overflow-visible">
+                                    {/* Custom Dropdown 3: Travel Style */}
+                                    <div className="space-y-2 relative overflow-visible">
                                         <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
                                             <FiCompass className="text-emerald-600" /> Travel Style
                                         </label>
-                                        <select 
-                                            name="travelStyle"
-                                            value={formData.travelStyle}
-                                            onChange={handleChange}
-                                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white cursor-pointer text-sm"
+                                        <button
+                                            type="button"
+                                            onClick={() => setActiveDropdown(activeDropdown === 'travelStyle' ? null : 'travelStyle')}
+                                            className="w-full flex items-center justify-between px-4 py-3 rounded-xl border border-slate-200 bg-white hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-medium text-slate-700 transition-all text-left cursor-pointer"
                                         >
-                                            <option value="Relaxing">Relaxing (Slow-paced)</option>
-                                            <option value="Balanced">Balanced</option>
-                                            <option value="Action-Packed">Action-Packed (Fast-paced)</option>
-                                            <option value="Cultural">Cultural Immersion</option>
-                                        </select>
+                                            <span>{travelStyleLabels[formData.travelStyle]}</span>
+                                            <FiChevronDown className={`text-slate-400 transition-transform ${activeDropdown === 'travelStyle' ? 'rotate-180 text-emerald-600' : ''}`} size={16} />
+                                        </button>
+                                        {activeDropdown === 'travelStyle' && (
+                                            <ul className="absolute left-0 top-full mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-xl z-50 overflow-hidden py-1">
+                                                {Object.keys(travelStyleLabels).map((key) => (
+                                                    <li key={key}>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleCustomSelect('travelStyle', key)}
+                                                            className={`w-full text-left px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer ${
+                                                                formData.travelStyle === key ? 'bg-emerald-50 text-emerald-700 font-bold' : 'text-slate-600 hover:bg-emerald-50 hover:text-emerald-700'
+                                                            }`}
+                                                        >
+                                                            {travelStyleLabels[key]}
+                                                        </button>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
                                     </div>
 
                                     <div className="space-y-2">
                                         <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
                                             <FiHeart className="text-emerald-600" /> Main Interests
                                         </label>
-                                        <input 
-                                            type="text" 
-                                            name="interests"
-                                            value={formData.interests}
-                                            onChange={handleChange}
-                                            placeholder="e.g., Food, Museums, Hiking, Nightlife" 
-                                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all text-sm"
-                                        />
+                                        <input type="text" name="interests" value={formData.interests} onChange={handleChange} placeholder="e.g., Food, Museums, Hiking, Nightlife" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all text-sm" />
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Submit Button Row */}
                             <div className="pt-6 border-t border-slate-100 flex justify-end mt-6">
-                                <button 
-                                    type="submit"
-                                    disabled={isSubmitting}
-                                    className="flex items-center gap-2 px-8 py-4 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white font-bold rounded-xl transition-colors shadow-lg shadow-emerald-600/20 active:scale-95 cursor-pointer disabled:cursor-not-allowed text-sm"
-                                >
+                                <button type="submit" disabled={isSubmitting} className="flex items-center gap-2 px-8 py-4 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white font-bold rounded-xl transition-colors shadow-lg shadow-emerald-600/20 active:scale-95 cursor-pointer disabled:cursor-not-allowed text-sm">
                                     <FiSend size={16} />
                                     {isSubmitting ? 'Generating Schedule...' : 'Generate Itinerary'}
                                 </button>
@@ -303,7 +351,7 @@ export default function TripPlanner() {
                         </form>
                     </div>
 
-                    {/* RIGHT COLUMN: Interactive Live Destination BillboardSidebar Container */}
+                    {/* RIGHT COLUMN: Billboard Sidebar Container */}
                     <div className="lg:col-span-1 min-h-75 lg:min-h-full">
                         {previewDestination ? (
                             <LocationImage query={previewDestination} />
@@ -317,24 +365,18 @@ export default function TripPlanner() {
                     </div>
                 </div>
 
-                {/* 🗺️ DYNAMIC FULL-WIDTH OPENSTREETMAP CONTAINER */}
-                {/* Embedded cleanly below the split planner items grid */}
-                {previewDestination && (
-                    <div className="w-full transition-all mt-6 animate-fade-in">
-                        <MapPreview query={previewDestination} />
-                    </div>
-                )}
+                {/* 🗺️ ✨ PERSISTENT ISOLATED FULL-WIDTH MAP PREVIEW CONTAINER */}
+                {/* 2. Swapped directly to standard div rendering using the shell wrapper inside a standard container row */}
+                <div className="w-full">
+                    <IsolatedMapSection />
+                </div>
 
                 {/* 🤖 AI Output Display Box */}
                 {aiResult && (
-                    <div className="bg-slate-900 text-slate-100 rounded-3xl shadow-xl border border-slate-800 p-8">
+                    <div className="bg-slate-900 text-slate-100 rounded-3xl shadow-xl border border-slate-800 p-8 mt-6">
                         <div className="border-b border-slate-800 pb-4 mb-6">
-                            <h2 className="text-3xl font-extrabold text-emerald-400 tracking-tight">
-                                ✨ Your Itinerary Results
-                            </h2>
-                            <p className="text-slate-400 text-sm mt-1">Custom-crafted schedule with active Unsplash photography streams.</p>
+                            <h2 className="text-3xl font-extrabold text-emerald-400 tracking-tight font-sans">✨ Your Itinerary Results</h2>
                         </div>
-                        
                         <div className="prose prose-invert max-w-none font-sans text-sm text-slate-300 bg-slate-950 p-6 rounded-2xl border border-slate-800/60">
                             <ReactMarkdown
                                 components={{
@@ -349,9 +391,7 @@ export default function TripPlanner() {
 
                                             return (
                                                 <div className="my-6 transition-all">
-                                                    {cleanTextContent && (
-                                                        <p className="mb-3 leading-relaxed text-slate-300">{cleanTextContent}</p>
-                                                    )}
+                                                    {cleanTextContent && <p className="mb-3 leading-relaxed text-slate-300">{cleanTextContent}</p>}
                                                     <div className="max-w-2xl">
                                                         <LocationImage query={searchQuery} />
                                                     </div>
