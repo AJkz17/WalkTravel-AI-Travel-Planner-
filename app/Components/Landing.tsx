@@ -17,9 +17,6 @@ const Landing = () => {
                     </span>
                 </div>
 
-                {/* Section 1: Top Hero Row (Description & Visual Elements) */}
-                {/* Section 1: Top Hero Row (Description & Visual Elements evenly split 50/50) */}
-                {/* Section 1: Top Hero Row (Balanced 50/50 Row Layout) */}
                 <section className="grid grid-cols-1 lg:grid-cols-12 items-stretch bg-white rounded-l-3xl shadow-sm border border-emerald-100/50 border-r-0 overflow-hidden">
                     
                     {/* Description Left (Exactly half the width) */}
@@ -38,8 +35,6 @@ const Landing = () => {
                         </p>
                     </div>
 
-                    {/* Visual Elements Right (Exactly half the width, dedicated fully to the Map image) */}
-                    {/* FIX: Removed grid-cols-2 so the single map picture fills up the entire right half of the row */}
                     <div className="lg:col-span-6 relative w-full h-full min-h-87.5 md:min-h-100 overflow-hidden transition-transform hover:scale-101 duration-300">
                         <Image 
                             src={MapPicture} 
@@ -121,7 +116,7 @@ const Landing = () => {
                     </div>
                 </section>
 
-                {/* Section 3: Bottom Call to Action (Green Gradient Focus) */}
+                {/*  Bottom Call to Action (Green Gradient Focus) */}
                 <section className="mt-8 bg-linear-to-br from-emerald-950 via-teal-900 to-slate-950 text-white rounded-3xl p-8 md:p-12 shadow-xl text-center relative overflow-hidden">
                     {/* Vibrant Green/Teal Accent Blurs */}
                     <div className="absolute -top-12 -left-12 w-48 h-48 bg-emerald-500/15 rounded-full blur-3xl"></div>
