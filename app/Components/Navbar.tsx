@@ -71,7 +71,7 @@ const Navbar = () => {
                 )}
                 
                 {/* Always Available: Info / Context */}
-                <Link href="/about" className={getLinkClass('/about')}>
+                <Link href="/About" className={getLinkClass('/about')}>
                     <FiInfo size={22} />
                     <span className="absolute left-16 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-slate-800 text-white text-xs font-light tracking-wider px-3 py-1.5 rounded-md pointer-events-none whitespace-nowrap shadow-md z-50">
                         About Us
@@ -80,7 +80,7 @@ const Navbar = () => {
 
                 {/* 🔒 PROTECTED LINK: Saved Itinerary Archive */}
                 {isLoggedIn && (
-                    <Link href="/saved" className={getLinkClass('/saved')}>
+                    <Link href="/Saved" className={getLinkClass('/saved')}>
                         <FiBookmark size={22} />
                         <span className="absolute left-16 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-slate-800 text-white text-xs font-light tracking-wider px-3 py-1.5 rounded-md pointer-events-none whitespace-nowrap shadow-md z-50">
                             Saved Trips
