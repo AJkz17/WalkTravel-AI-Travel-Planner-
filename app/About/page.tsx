@@ -55,7 +55,7 @@ export default function AboutPage() {
             <div className="max-w-6xl mx-auto space-y-16">
 
                 {/* 🚀 HERO SECTION WITH 3D CANVAS */}
-                <div className="relative bg-slate-900 text-white rounded-4xl p-8 md:p-14 overflow-hidden border border-slate-800 shadow-2xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-center min-h-[480px]">
+                <div className="relative bg-slate-900 text-white rounded-4xl p-8 md:p-14 overflow-hidden border border-slate-800 shadow-2xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-center min-h-120">
                     
                     {/* Hero Left Column Text */}
                     <div className="space-y-6 z-10">
@@ -83,7 +83,7 @@ export default function AboutPage() {
                     </div>
 
                     {/* Hero Right Column: Interactive 3D Canvas */}
-                    <div className="w-full h-80 lg:h-full min-h-[320px] relative flex items-center justify-center">
+                    <div className="w-full h-80 lg:h-full min-h-80 relative flex items-center justify-center">
                         {isClient ? (
                             <Canvas className="w-full h-full cursor-grab active:cursor-grabbing">
                                 <ambientLight intensity={0.8} />
