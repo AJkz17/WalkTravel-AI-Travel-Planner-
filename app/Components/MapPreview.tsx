@@ -3,7 +3,7 @@
 import React, { useState, useEffect, memo } from 'react';
 import { FiMap, FiMapPin, FiTarget, FiAlertTriangle } from 'react-icons/fi';
 
-// Global static layout style sheet
+// Global static layout style sheet (completely safe from server window crashes)
 import 'leaflet/dist/leaflet.css';
 
 interface VenueItem {
@@ -14,7 +14,7 @@ interface VenueItem {
     type?: string;
 }
 
-//  Leaflet Canvas Engine
+// 🟢 SUB-COMPONENT: Leaflet Canvas Engine
 function LeafletCanvas({ 
     coordinates, 
     activeLocation, 
@@ -24,6 +24,14 @@ function LeafletCanvas({
     activeLocation: string; 
     venues: VenueItem[]; 
 }) {
+    // 🟩 CRITICAL ENVIRONMENT GUARD GATEWAY
+    // If running on the Next.js server pre-rendering thread, exit immediately.
+    // This stops require() from firing early and causing the "window is not defined" error.
+    if (typeof window === 'undefined') {
+        return <div className="w-full h-full bg-slate-100" />;
+    }
+
+    // Natively require browser packages only when mounting live on the client side
     const { MapContainer, TileLayer, Marker, Popup, useMap } = require('react-leaflet');
     const L = require('leaflet');
 
@@ -59,15 +67,14 @@ function LeafletCanvas({
             <Marker position={coordinates} icon={centerLocationIcon}>
                 <Popup>
                     <div className="font-sans text-xs text-slate-800">
-                        <span className="font-bold block text-slate-900">📍 Center Region</span>
+                        <span className="font-bold block text-slate-900">📍 Center Target Region</span>
                         <span className="text-slate-500 text-[10px]">{activeLocation}</span>
                     </div>
                 </Popup>
             </Marker>
 
-            {/* GREEN PINS: Local Discoveries mapped dynamically */}
+            {/* 🟢 GREEN PINS: Local Discoveries mapped dynamically */}
             {venues.map((venue, idx) => {
-
                 const queryText = `${venue.name} ${venue.street || ''} ${activeLocation}`;
                 const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(queryText)}`;
 
@@ -88,7 +95,7 @@ function LeafletCanvas({
                                     {venue.street ? venue.street : 'Surrounding Area District'}
                                 </span>
 
-                                {/* STYLED ACTION REDIRECT TAB LINK */}
+                                {/* 🟩 GOOGLE REVIEWS REDIRECT LINK INTERFACE */}
                                 <a 
                                     href={googleSearchUrl}
                                     target="_blank"
@@ -115,7 +122,7 @@ function MapPreviewComponent() {
     // Form search states
     const [locationInput, setLocationInput] = useState<string>('');
     const [activeLocation, setActiveLocation] = useState<string>('');
-    const [coordinates, setCoordinates] = useState<[number, number] | null>([35.6762, 139.6503]); // Tokyo fallback default
+    const [coordinates, setCoordinates] = useState<[number, number] | null>([35.6762, 139.6503]); // Tokyo default
     
     const [shopInput, setShopInput] = useState<string>('');
     const [venues, setVenues] = useState<VenueItem[]>([]);
@@ -168,7 +175,7 @@ function MapPreviewComponent() {
         e.preventDefault();
         if (locationInput.trim()) {
             setActiveLocation(locationInput.trim());
-            setVenues([]); // Reset matching pins when shifting location boundaries
+            setVenues([]); 
             hasError && setHasError(false);
             localStorage.setItem('saved_preview_map_location', locationInput.trim());
         }
@@ -184,9 +191,6 @@ function MapPreviewComponent() {
             const overpassUrl = `https://overpass-api.de/api/interpreter`;
             const cleanKeyword = shopInput.trim().toLowerCase();
             
-            // 🟩 FIXED LOGIC BLOCK:
-            // Intercept broad category terms so typing "coffee shop" fetches raw categories directly 
-            // instead of restricting to matching names.
             let overpassQuery = '';
             
             if (cleanKeyword.includes('coffe') || cleanKeyword.includes('cafe') || cleanKeyword.includes('shop')) {
@@ -209,7 +213,6 @@ function MapPreviewComponent() {
                     out body 20;
                 `;
             } else {
-                // General keyword fallback fallback filter rule
                 overpassQuery = `
                     [out:json][timeout:30];
                     (
@@ -240,7 +243,6 @@ function MapPreviewComponent() {
                         type: el.tags.amenity || el.tags.shop || el.tags.tourism || 'venue'
                     }));
 
-                // Unique filtering helper
                 const uniqueVenues = mappedVenues.filter((venue: VenueItem, idx: number, self: VenueItem[]) =>
                     idx === self.findIndex((v) => v.name.toLowerCase() === venue.name.toLowerCase())
                 );
@@ -317,7 +319,11 @@ function MapPreviewComponent() {
                 </div>
                 
                 <div className="flex-1 relative w-full h-full">
-                    {hasError ? (
+                    {!isClient ? (
+                        <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-slate-50 text-xs font-semibold text-slate-400 font-sans animate-pulse">
+                            Pre-compiling Map Engine Grids...
+                        </div>
+                    ) : hasError ? (
                         <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-slate-50">
                             <FiAlertTriangle size={24} className="mb-1 text-amber-500 animate-bounce" />
                             <span className="text-xs font-bold text-slate-700">Map Rate Limit hit</span>
