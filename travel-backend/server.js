@@ -149,7 +149,7 @@ app.post('/api/trips', async (req, res) => {
 app.post('/api/auth/login', async (req, res) => {
     const { email, password } = req.body;
 
-    // 1. Structural input confirmation
+    // Structural input confirmation
     if (!email || !password) {
         return res.status(400).json({ error: 'Both email and password are required.' });
     }
@@ -165,14 +165,14 @@ app.post('/api/auth/login', async (req, res) => {
 
         const user = result.rows[0];
 
-        // 3. Compare password with database
+        // Compare password with database
         const isPasswordMatch = await bcrypt.compare(password, user.password);
 
         if (!isPasswordMatch) {
             return res.status(401).json({ error: 'Invalid email credentials or password.' });
         }
 
-        // 4. Successful match! Send user information back to the frontend
+        // Successful match! Send user information back to the frontend
         console.log(`🔓 User authenticated successfully: ${user.username} (ID: ${user.id})`);
         
         res.status(200).json({
@@ -261,7 +261,6 @@ app.post('/api/upload-document', async (req, res) => {
         }
         if (currentChunk.length > 0) chunks.push(currentChunk.join(' '));
 
-        // For now, we will return the chunks to confirm it works
         return res.status(200).json({
             message: "Document successfully parsed!",
             totalChunks: chunks.length,
