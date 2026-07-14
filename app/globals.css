@@ -17,3 +17,13 @@
 .animate-float {
   animation: floatAnimation 4s ease-in-out infinite;
 }
+
+
+@theme {
+  --animate-marqueeScroll: marqueeScroll 40s linear infinite;
+
+  @keyframes marqueeScroll {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
+}
