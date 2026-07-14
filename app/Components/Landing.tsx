@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Users, Map, MapPin, Database, LogIn, UserPlus, Cpu } from 'lucide-react';
 import MalaysiaImage from '../assets/asset.js'; // Your original import
 import { MapPicture } from '../assets/asset.js'; // Importing the MapPicture
+import PlaceMarquee from './PlaceMarque'; // Importing the PlaceMarquee component
 
 const Landing = () => {
     return (
@@ -115,6 +116,8 @@ const Landing = () => {
                         </table>
                     </div>
                 </section>
+
+                <PlaceMarquee />
 
                 {/*  Bottom Call to Action (Green Gradient Focus) */}
                 <section className="mt-8 bg-linear-to-br from-emerald-950 via-teal-900 to-slate-950 text-white rounded-3xl p-8 md:p-12 shadow-xl text-center relative overflow-hidden">
